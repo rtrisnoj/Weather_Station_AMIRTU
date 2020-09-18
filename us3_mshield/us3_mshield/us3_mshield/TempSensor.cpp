@@ -175,6 +175,17 @@ float resultUltra = 0;
 
 byte temp_data[12];
 byte sendRS485Request[8]={0x3C,0x03,0x00,0x01,0x00,0x01,0xD1,0x27}; //Send Request for STATUS Command
+byte sendAirTemperatureRequest[8]={0x3C,0x03,0x00,0x01,0x00,0x01,0xD1,0x27};
+byte sendHumidityRequest[8]={0x3C,0x03,0x00,0x01,0x00,0x01,0xD1,0x27};
+byte sendPressureRequest[8]={0x3C,0x03,0x00,0x01,0x00,0x01,0xD1,0x27};
+byte sendWindSpeedRequest[8]={0x3C,0x03,0x00,0x01,0x00,0x01,0xD1,0x27};
+byte sendWindDirectionRequest[8]={0x3C,0x03,0x00,0x01,0x00,0x01,0xD1,0x27};
+byte sendAvgWindSpeedRequest[8]={0x3C,0x03,0x00,0x01,0x00,0x01,0xD1,0x27};
+byte sendAvgWindDirectionRequest[8]={0x3C,0x03,0x00,0x01,0x00,0x01,0xD1,0x27};
+byte sendGustSpeedRequest[8]={0x3C,0x03,0x00,0x01,0x00,0x01,0xD1,0x27};
+byte sendGustDirectionRequest[8]={0x3C,0x03,0x00,0x01,0x00,0x01,0xD1,0x27};
+byte sendRainfallRequest[8]={0x3C,0x03,0x00,0x01,0x00,0x01,0xD1,0x27};
+
 size_t bytes;
 
 float Send(byte * cmd, byte* ret) {
@@ -189,7 +200,7 @@ float Send(byte * cmd, byte* ret) {
   if (Serial3.available()){  //Read return data package (NOTE: Demo is just for your reference, the data package haven't be calibrated yet)
 	while(Serial3.read() != 0x3C);
 	ret[0] = 0x3C; //Slave ID
-	for(int j=2; j < 16; j++){
+	for(int j=2; j < 18; j++){
 		ret[j++]=(Serial3.read());
 	}
 	
@@ -197,27 +208,34 @@ float Send(byte * cmd, byte* ret) {
     Serial.println(ret[0],HEX); //byte 1    //Slave ID
     Serial.println(ret[2],HEX); //byte 2    //Function Code
     Serial.println(ret[4],HEX); //byte 3    //2 bytes
-    Serial.println(ret[6],HEX); //byte 4    //Hex 
-    Serial.println(ret[8],HEX); //byte 5    //Hex
-    Serial.println(ret[10],HEX); //byte 6   //Checksum mod 256
-	Serial.println(ret[12],HEX); //byte 7   //Checksum mod 256
-	Serial.println(ret[14],HEX); //byte 8   //Checksum mod 256
+    Serial.println(ret[6],HEX); //byte 4    //Hex First Register
+    Serial.println(ret[8],HEX); //byte 5    //Hex Second Register
+    Serial.println(ret[10],HEX); //byte 6   //Register
+	Serial.println(ret[12],HEX); //byte 7   //Register
+	Serial.println(ret[14],HEX); //byte 8   //Checksum CRC
+	Serial.println(ret[16],HEX); //byte 9   //Checksum CRC
 	
     Serial.println("Data End");
 
     Serial3.flush();
     Serial.println("Received data Done");
-
+	
+	resultTemp = (float(ret[6])*256)+ float(ret[8]);
+	Serial.print("Temperature: ");
+	Serial.print(resultTemp);
+	Serial.println(" C");
+	
+	/*
     resultTemp = (float(ret[8])*0.48876)-50;
     Serial.print("Temperature: ");
     Serial.print(resultTemp);
     Serial.println(" C");
-
+	
     resultUltra = (float(ret[6]*256)+float(ret[4]))/128;
     Serial.print("Level: ");
     Serial.print(resultUltra);
     Serial.println(" In");
-
+	*/
   }
   else{
     Serial.println("Error reading RS485");

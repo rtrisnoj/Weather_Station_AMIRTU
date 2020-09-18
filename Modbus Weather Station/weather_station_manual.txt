@@ -1,3 +1,9 @@
+*T/R+ = A (AMI RTU) = B (Weather Station)
+*T/R- = B (AMI RTU) = A (Weather Station)
+*
+*
+*GND = GND (AMI RTU) = GND ( Weather Station)
+
 Read the first Modbus RTU
 
 Decimal
