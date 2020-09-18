@@ -1,0 +1,28 @@
+Read the first Modbus RTU
+
+Decimal
+60 03 0001 0001 209 39
+
+Hex 
+3C 03 00 01 00 01 D1 27
+
+Meaning
+3C -> Slave ID 60 decimal = 3C (Hex)
+
+03 -> Function Code (Reading Holding Register)
+
+00 01 -> Reading second coil (Starting coil is 0 = 1, 1 = 2)
+
+00 01 -> Reading one register
+
+D1 27 -> Checksum CRC Modbus 
+
+Response
+3C 03 02 53 30 E9 65 0D 0A
+
+Meaning
+3c 03 --> Response of Slave ID and Function Code
+
+02 ---> 2 bytes
+
+53 30 --> Hex 5330 to Decimal = 21296 (Model)

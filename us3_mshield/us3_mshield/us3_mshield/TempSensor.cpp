@@ -174,7 +174,7 @@ float resultTemp = 0;
 float resultUltra = 0;
 
 byte temp_data[12];
-byte sendRS485Request[6]={0xAA,0x01,0x03,0x00,0x00,0xAE}; //Send Request for STATUS Command
+byte sendRS485Request[8]={0x3C,0x03,0x00,0x01,0x00,0x01,0xD1,0x27}; //Send Request for STATUS Command
 size_t bytes;
 
 float Send(byte * cmd, byte* ret) {
@@ -187,19 +187,22 @@ float Send(byte * cmd, byte* ret) {
 	
 	 // receive answer
   if (Serial3.available()){  //Read return data package (NOTE: Demo is just for your reference, the data package haven't be calibrated yet)
-	while(Serial3.read() != 0x01);
-	ret[0] = 0x01;
-	for(int j=2; j < 12; j++){
+	while(Serial3.read() != 0x3C);
+	ret[0] = 0x3C; //Slave ID
+	for(int j=2; j < 16; j++){
 		ret[j++]=(Serial3.read());
 	}
 	
     Serial.println("Data Begin");
-    Serial.println(ret[0],HEX); //byte 1    //Sensor ID Tag
-    Serial.println(ret[2],HEX); //byte 2    //Response Code
-    Serial.println(ret[4],HEX); //byte 3    //Range LSB
-    Serial.println(ret[6],HEX); //byte 4    //Range MSB
-    Serial.println(ret[8],HEX); //byte 5    //Temperature Data
+    Serial.println(ret[0],HEX); //byte 1    //Slave ID
+    Serial.println(ret[2],HEX); //byte 2    //Function Code
+    Serial.println(ret[4],HEX); //byte 3    //2 bytes
+    Serial.println(ret[6],HEX); //byte 4    //Hex 
+    Serial.println(ret[8],HEX); //byte 5    //Hex
     Serial.println(ret[10],HEX); //byte 6   //Checksum mod 256
+	Serial.println(ret[12],HEX); //byte 7   //Checksum mod 256
+	Serial.println(ret[14],HEX); //byte 8   //Checksum mod 256
+	
     Serial.println("Data End");
 
     Serial3.flush();
@@ -247,7 +250,7 @@ void sendCommand(byte *cmd) {
  	digitalWrite(D5, HIGH); 
 	delay(100);
 
-	for(int i=0; i < 6; i++){
+	for(int i=0; i < 8; i++){
 		Serial3.write(cmd[i]); 
   //Serial.print(cmd[i]);
 	}	

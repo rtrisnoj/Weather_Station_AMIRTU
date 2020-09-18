@@ -92,7 +92,7 @@ int sampleRate1 = 0;
 void setup()
 {
 	Serial.begin(115200);
-	Serial3.begin(19200);
+	Serial3.begin(9600);
 	sapi_error_t rcode;
 	// Initialize Sensor API
 	sapi_initialize(NULL);
